@@ -34,6 +34,18 @@ class Hangman:
     def display_word(self):
         return ' '.join([letter if letter in self.guesses else '_' for letter in self.word_to_guess])
 
+    def make_guess(self, guess):
+        # guess a letter and update game
+        guess = guess.upper()
+        if guess in self.guesses:
+            return False, 
+        self.guesses.add(guess)
+        if guess not in self.word_to_guess:
+            self.incorrect_guesses =+ 1
+            return False,
+        return True
+
+
 
 
 
@@ -45,6 +57,7 @@ def main():
     words = get_words_from_sheet()
     game = Hangman(words)
     print(game.display_word())
+    guess = input("Enter your guess(letter or full word) here: ").strip()
 
 
 if __name__ == "__main__":
