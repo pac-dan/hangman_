@@ -45,6 +45,17 @@ class Hangman:
             return False,
         return True
 
+    def is_winner(self):
+    # check for correctly guessed word
+        return all(letter in self.guesses for letter in self.word_to_guess)
+
+    def is_loser(self):
+        # check if max incorrect guesses reached 
+        return self.incorrect_guesses >= self.max_incorrect_guesses
+
+
+
+
 
 
 
