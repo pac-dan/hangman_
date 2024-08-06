@@ -126,6 +126,9 @@ def play_game():
     while True:
         clear_screen()
         print(game.display_hangman())
+        print("Word to guess:", game.display_word())
+        print(f"Guesses: {' '.join(sorted(game.guesses))}")
+        guess = input("Enter your guess(word or letter) here:").strip().upper()
 
 
 def main():
