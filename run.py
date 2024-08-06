@@ -118,26 +118,18 @@ def clear_screen():
     # clear console screen
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def play_game():
+    # plays the game 
+    words = get_words_from_sheet()
+    game = Hangman(words)
 
-
-
-
-
-
-
-
-
-
+    while True:
+        clear_screen()
+        print(game.display_hangman())
 
 
 def main():
-    print('Welcome to Hangman!')
-    words = get_words_from_sheet()
-    game = Hangman(words)
-    print(game.display_hangman())
-    print(game.display_word())
-    guess = input("Enter your guess(letter or full word) here: ").strip()
-
+    play_game()
 
 if __name__ == "__main__":
     main()
