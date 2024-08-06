@@ -53,6 +53,73 @@ class Hangman:
         # check if max incorrect guesses reached 
         return self.incorrect_guesses >= self.max_incorrect_guesses
 
+    def display_hangman(self):
+        stages = [
+             """
+               -----
+               |   |
+                   |
+                   |
+                   |
+                   |
+            """,
+                       """
+               -----
+               |   |
+               O   |
+                   |
+                   |
+                   |
+            """,
+                        """
+               -----
+               |   |
+               O   |
+               |   |
+                   |
+                   |
+            """,
+                        """
+               -----
+               |   |
+               O   |
+              /|   |
+                   |
+                   |
+            """,
+                        """
+               -----
+               |   |
+               O   |
+              /|\\  |
+                   |
+                   |
+            """,
+                        """
+               -----
+               |   |
+               O   |
+              /|\\  |
+              /    |
+                   |
+            """,
+                        """
+               -----
+               |   |
+               O   |
+              /|\\  |
+              / \\  |
+                   |
+            """
+        ]
+        return stages[self.incorrect_guesses]
+
+def clear_screen():
+    # clear console screen
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+
 
 
 
@@ -67,6 +134,7 @@ def main():
     print('Welcome to Hangman!')
     words = get_words_from_sheet()
     game = Hangman(words)
+    print(game.display_hangman())
     print(game.display_word())
     guess = input("Enter your guess(letter or full word) here: ").strip()
 
