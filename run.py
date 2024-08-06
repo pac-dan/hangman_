@@ -21,12 +21,12 @@ def get_words_from_sheet():
 
 def add_word_to_sheet(word):
     # Add a new word to the sheet
-    SHEET.append_row([word_upper()])
+    SHEET.append_row([word.upper()])
 
 class Hangman:
     def __init__(self, words):
         self.words = words
-        self.word_to_guess = random.choice(words)
+        self.word_to_guess = random.choice(words).upper()
         self.guesses = set()
         self.incorrect_guesses = 0
         self.max_incorrect_guesses = 6
@@ -38,12 +38,23 @@ class Hangman:
         # guess a letter and update game
         guess = guess.upper()
         if guess in self.guesses:
-            return False, 
+            return False, "You already guessed that letter."
         self.guesses.add(guess)
-        if guess not in self.word_to_guess:
-            self.incorrect_guesses =+ 1
-            return False,
-        return True
+        if len(guess) == 1:
+            if guess not in self.word_to_guess:
+                self.incorrect_guesses += 1
+                return False,"Incorrect guess."
+            return True, "Correct guess."
+        elif len(guess) == len(self.word_to_guess):
+            if guess ==self.word_to_guess:
+                self.guesses.update(self.word_to_guess)
+                return True,"You guessed the whole word correctly!."
+            else:
+                self.incorrect_guesses += 1
+                return False, "Incorrect guess."
+        else:
+            return False, "Invalid guess length."
+
 
     def is_winner(self):
     # check for correctly guessed word
@@ -130,9 +141,35 @@ def play_game():
         print(f"Guesses: {' '.join(sorted(game.guesses))}")
         guess = input("Enter your guess(word or letter) here:").strip().upper()
 
+        if not guess.isalpha() or len(guess) == 0:
+            print("Invalid input. Please enter a letter or a word")
+            input("Press Enter To Continue. . .")
+            continue
+
+        correct, message = game.make_guess(guess)
+        print(message)
+        input("Press Enter To Continue. . .")
+
+        if game.is_winner():
+            print("Congradulations, you guessed correctly!:", game.word_to_guess)
+            break
+
+        elif game.is_loser():
+            print("Oh no! You've run out of guesses. The correct word was:", game.word_to_guess)
+            break
+ 
+    if input("Do you want to add a new word to the game? (Y/N):").upper() == 'Y':
+        new_word = input("Enter new word: ")
+        add_word_to_sheet(new_word)
+
 
 def main():
-    play_game()
+    print("Welcome to Hangman!")
+    while True:
+        play_game()
+        if input("Play again (Y/N): ").upper() != 'Y':
+            print("Thanks for playing!")
+            break
 
 if __name__ == "__main__":
     main()
