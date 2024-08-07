@@ -2,6 +2,10 @@ import random
 import os 
 import gspread
 from google.oauth2.service_account import Credentials
+from colorama import init, Fore, Style
+
+# Initialize colorama
+init(autoreset=True)
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -78,22 +82,23 @@ class Hangman:
         """
         guess = guess.upper()
         if guess in self.guesses:
-            return False, "You already guessed that letter."
+            return False, Fore.RED + "You already guessed that letter."
         self.guesses.add(guess)
         if len(guess) == 1:
             if guess not in self.word_to_guess:
                 self.incorrect_guesses += 1
-                return False,"Incorrect guess."
-            return True, "Correct guess."
+                return False, Fore.RED + "Incorrect guess."
+            return True, Fore.GREEN + "Correct guess."
         elif len(guess) == len(self.word_to_guess):
             if guess ==self.word_to_guess:
                 self.guesses.update(self.word_to_guess)
-                return True,"You guessed the whole word correctly!."
+                return True, Fore.GREEN + "You guessed the whole word correctly!."
             else:
                 self.incorrect_guesses += 1
-                return False, "Incorrect guess."
+                return False, Fore.RED + "Incorrect guess."
         else:
-            return False, "Invalid guess length."
+            return False, Fore.RED + "Invalid guess length, please try again."
+
 
 
     def is_winner(self):
@@ -185,6 +190,21 @@ def clear_screen():
     """clears the console screen"""
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def display_instructions():
+    """ 
+    Display the Game instructions.
+    """
+    clear_screen()
+    print(Fore.YELLOW + "Welcome to Hangman!")
+    print(Fore.YELLOW +"\nInstructions:")
+    print(Fore.MAGENTA +"1. You need to guess the word by suggesting letters within a certain number of guesses allowed(6).")
+    print(Fore.MAGENTA +"2. Each correct letter will be revealed in the word.")
+    print(Fore.MAGENTA +"3. Each incorrect guess will be added to the Hangman.")
+    print(Fore.MAGENTA +"4. If you guess the word before the hangman is fully drawn, you win!")
+    print(Fore.MAGENTA +"5. If not, you lose. . . ")
+    print(Fore.MAGENTA +"\nGood Luck and remember to have fun!")
+    print(Fore.YELLOW +"\nPress 1. to Play or 3. to Exit")
+
 def play_game():
     """Play one game of hangman""" 
     words = get_words_from_sheet()
@@ -194,17 +214,17 @@ def play_game():
         clear_screen()
         print(game.display_hangman())
         print("Word to guess:", game.display_word())
-        print(f"Guesses: {' '.join(sorted(game.guesses))}")
-        guess = input("Enter your guess(word or letter) here:").strip().upper()
+        print(Fore.YELLOW + f"Guesses: {' '.join(sorted(game.guesses))}")
+        guess = input(Fore.BLUE + "Enter your guess(word or letter) here:").strip().upper()
 
         if not guess.isalpha() or len(guess) == 0:
-            print("Invalid input. Please enter a letter or a word")
-            input("Press Enter To Continue. . .")
+            print(Fore.RED + "Invalid input. Please enter a letter or a word")
+            input(Fore.BLUE + "Press Enter To Continue. . .")
             continue
 
         correct, message = game.make_guess(guess)
         print(message)
-        input("Press Enter To Continue. . .")
+        input(Fore.BLUE + "Press Enter To Continue. . .")
 
         if game.is_winner():
             print(f"Congratulations, you guessed correctly!: {game.word_to_guess}\n")
@@ -214,22 +234,44 @@ def play_game():
             print(f"Oh no! You've run out of guesses. The correct word was: {game.word_to_guess}\n")
             break
  
-    if input("Do you want to add a new word to the game? (Y/N):").upper() == 'Y':
-        new_word = input("Enter new word: ")
+    if input(Fore.YELLOW + "Do you want to add a new word to the game? (Y/N):").upper() == 'Y':
+        new_word = input(Fore.YELLOW + "Enter new word: ")
         add_word_to_sheet(new_word)
+        clear_screen()
 
+
+def main_menu():
+    """ 
+    display the main menu and handle user choices
+    """
+
+    while True:
+        
+        print(Fore.CYAN + Style.BRIGHT + "\nHangman Game")
+        print(Fore.GREEN + "1. Play Game")
+        print(Fore.GREEN + "2. How to Play")
+        print(Fore.RED + "3. Exit")
+
+        choice = input(Fore.BLUE + Style.BRIGHT + "Enter your choice here(1-3): ").strip()
+
+        if choice == '1':
+            play_game()
+        elif choice == '2':
+            clear_screen()
+            display_instructions()
+        elif choice == '3':
+            print(Fore.GREEN + Style.BRIGHT + "Thanks for playing! Slainte")
+            break
+        else:
+            print(Fore.RED + "Invalid choice. Please enter 1, 2 or 3.")
+            input(Fore.BLUE + "Press Enter to continue . . .")
 
 def main():
     """
     Main function to run the Hangman Game.
     """
-    print("Welcome to Hangman!")
-    
-    while True:
-        play_game()
-        if input("Play again (Y/N): ").upper() != 'Y':
-            print("Thanks for playing!")
-            break
+    main_menu()
+
 
 if __name__ == "__main__":
     main()
