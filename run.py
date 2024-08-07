@@ -15,16 +15,42 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open("hangman_words_list").sheet1
 
 def get_words_from_sheet():
-    # Get all words from sheet 
+    """
+    Retrieve all words from the Google Sheets document.
+
+    Returns:
+        list: A list of words from the Google Sheet, converted to uppercase.
+    """
     words = SHEET.col_values(1)
     return [word.upper() for word in words if word]
 
 def add_word_to_sheet(word):
-    # Add a new word to the sheet
+    """
+    Add a new word to the Google Sheets document.
+
+    Args:
+        word(str): The word to add to the Google Sheet.
+    """
     SHEET.append_row([word.upper()])
 
 class Hangman:
+    """
+    A class represents the Hangman game.
+
+    Attributes:
+        words(list): A list of words from which the word to guess is randomly selected.
+        word_to _guess (str): The word that the player has to guess.
+        guesses (set): A set of letters and words that the player has guessed.
+        incorrect_guesses (int): The count of incorrect guesses made by the player.
+        max_incorrect_guesses (int): The maximum number of incorrect guesses allowed.
+    """
     def __init__(self, words):
+        """
+        Initializes the Hangman game with a list of words.
+
+        Args:
+            words (list): A list of words from which the word to guess is randomly selected.
+        """
         self.words = words
         self.word_to_guess = random.choice(words).upper()
         self.guesses = set()
@@ -32,10 +58,24 @@ class Hangman:
         self.max_incorrect_guesses = 6
 
     def display_word(self):
+        """
+        Dipslays the current state of the word being guessed.
+
+        Returns:
+            str: A string representation of the word using '_' for unguessed letters and the correct letters for guessed letters.
+        """
         return ' '.join([letter if letter in self.guesses else '_' for letter in self.word_to_guess])
 
     def make_guess(self, guess):
-        # guess a letter and update game
+        """ 
+        Processes the players guess, updating the game state.
+
+        Args:
+            guess (str): The players guessed letter or word
+
+        Returns:
+            tuple: A tuple containing a boolean indicating whether the guess was correct, and a message string with feedback
+        """
         guess = guess.upper()
         if guess in self.guesses:
             return False, "You already guessed that letter."
@@ -57,14 +97,30 @@ class Hangman:
 
 
     def is_winner(self):
-    # check for correctly guessed word
+        """
+        Checks if the player has guessed the word correctly.
+        
+        Returns:
+            bool: True if the player has guessed the word correctly, False otherwise.
+        """
         return all(letter in self.guesses for letter in self.word_to_guess)
 
     def is_loser(self):
-        # check if max incorrect guesses reached 
+        """
+        Checks if the player has reached the maximum number of incorrect guesses.
+        
+        Returns:
+            bool: True if the player has reached the maximum number of incorrect guesses, False otherwise.
+        """
         return self.incorrect_guesses >= self.max_incorrect_guesses
 
     def display_hangman(self):
+        """
+        Displays the current hangman drawing based on the number of incorrect guesses.
+        
+        Returns:
+            str: A string representation of the hangman drawing.
+        """
         stages = [
              """
                -----
@@ -126,11 +182,11 @@ class Hangman:
         return stages[self.incorrect_guesses]
 
 def clear_screen():
-    # clear console screen
+    """clears the console screen"""
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def play_game():
-    # plays the game 
+    """Play one game of hangman""" 
     words = get_words_from_sheet()
     game = Hangman(words)
 
@@ -151,11 +207,11 @@ def play_game():
         input("Press Enter To Continue. . .")
 
         if game.is_winner():
-            print("Congradulations, you guessed correctly!:", game.word_to_guess)
+            print(f"Congratulations, you guessed correctly!: {game.word_to_guess}\n")
             break
 
         elif game.is_loser():
-            print("Oh no! You've run out of guesses. The correct word was:", game.word_to_guess)
+            print(f"Oh no! You've run out of guesses. The correct word was: {game.word_to_guess}\n")
             break
  
     if input("Do you want to add a new word to the game? (Y/N):").upper() == 'Y':
@@ -164,7 +220,11 @@ def play_game():
 
 
 def main():
+    """
+    Main function to run the Hangman Game.
+    """
     print("Welcome to Hangman!")
+    
     while True:
         play_game()
         if input("Play again (Y/N): ").upper() != 'Y':
