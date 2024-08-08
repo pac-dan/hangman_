@@ -215,7 +215,7 @@ def display_instructions():
     Display the Game instructions.
     """
     clear_screen()
-    print(Fore.YELLOW + "Welcome to Hangman!")
+    print(Fore.YELLOW + "Welcome to Crazy Hangman!")
     print(Fore.YELLOW + "\nInstructions:")
     print(Fore.RED + "1. You need to guess the word by suggesting letters"
           "within a certain number of guesses allowed(6).")
@@ -237,10 +237,10 @@ def play_game():
     while True:
         clear_screen()
         print(game.display_hangman())
-        print("Word to guess:", game.display_word())
+        print("Crazy Word to guess:", game.display_word())
         print(Fore.YELLOW + f"Guesses: {' '.join(sorted(game.guesses))}")
         guess = input(Fore.BLUE +
-                      "Enter your guess(word or letter) here:\n"
+                      "Enter your guess(Crazy word or letter) here:\n"
                       ).strip().upper()
 
         if not guess.isalpha() or len(guess) == 0:
