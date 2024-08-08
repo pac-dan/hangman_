@@ -1,20 +1,23 @@
 import random
 import os 
+import json
 import gspread
-from google.oauth2.service_account import Credentials
 from colorama import init, Fore, Style
+from google.oauth2.service_account import Credentials
 
 # Initialize colorama
 init(autoreset=True)
 
-SCOPE = [
+# Load credentials from environment variable
+creds_json = os.getenv('GOOGLE_CREDS_JSON')
+
+CREDS = Credentials.from_service_account_file('creds.json')
+
+SCOPED_CREDS = CREDS.with_scopes([
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/drive"
-    ]
-
-CREDS = Credentials.from_service_account_file('creds.json')
-SCOPED_CREDS = CREDS.with_scopes(SCOPE)
+    ])
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open("hangman_words_list").sheet1
 
@@ -203,7 +206,7 @@ def display_instructions():
     print(Fore.MAGENTA +"4. If you guess the word before the hangman is fully drawn, you win!")
     print(Fore.MAGENTA +"5. If not, you lose. . . ")
     print(Fore.MAGENTA +"\nGood Luck and remember to have fun!")
-    print(Fore.YELLOW +"\nPress 1. to Play or 3. to Exit")
+    input(Fore.YELLOW +"\nPress Enter to return to the Main Menu. . .\n")
 
 def play_game():
     """Play one game of hangman""" 
@@ -215,16 +218,16 @@ def play_game():
         print(game.display_hangman())
         print("Word to guess:", game.display_word())
         print(Fore.YELLOW + f"Guesses: {' '.join(sorted(game.guesses))}")
-        guess = input(Fore.BLUE + "Enter your guess(word or letter) here:").strip().upper()
+        guess = input(Fore.BLUE + "Enter your guess(word or letter) here:\n").strip().upper()
 
         if not guess.isalpha() or len(guess) == 0:
-            print(Fore.RED + "Invalid input. Please enter a letter or a word")
-            input(Fore.BLUE + "Press Enter To Continue. . .")
+            print(Fore.RED + "\nInvalid input. Please enter a letter or a word")
+            input(Fore.BLUE + "Press Enter To Continue. . .\n")
             continue
 
         correct, message = game.make_guess(guess)
         print(message)
-        input(Fore.BLUE + "Press Enter To Continue. . .")
+        input(Fore.BLUE + "Press Enter To Continue. . .\n")
 
         if game.is_winner():
             print(f"Congratulations, you guessed correctly!: {game.word_to_guess}\n")
@@ -234,10 +237,9 @@ def play_game():
             print(f"Oh no! You've run out of guesses. The correct word was: {game.word_to_guess}\n")
             break
  
-    if input(Fore.YELLOW + "Do you want to add a new word to the game? (Y/N):").upper() == 'Y':
-        new_word = input(Fore.YELLOW + "Enter new word: ")
+    if input(Fore.YELLOW + "Do you want to add a new word to the game? (Y/N):\n").upper() == 'Y':
+        new_word = input(Fore.YELLOW + "Enter new word: \n")
         add_word_to_sheet(new_word)
-        clear_screen()
 
 
 def main_menu():
@@ -246,25 +248,25 @@ def main_menu():
     """
 
     while True:
-        
+        clear_screen()
         print(Fore.CYAN + Style.BRIGHT + "\nHangman Game")
         print(Fore.GREEN + "1. Play Game")
         print(Fore.GREEN + "2. How to Play")
         print(Fore.RED + "3. Exit")
 
-        choice = input(Fore.BLUE + Style.BRIGHT + "Enter your choice here(1-3): ").strip()
+        choice = input(Fore.BLUE + Style.BRIGHT + "Enter your choice here(1-3): \n").strip()
 
         if choice == '1':
+            clear_screen()
             play_game()
         elif choice == '2':
-            clear_screen()
             display_instructions()
         elif choice == '3':
             print(Fore.GREEN + Style.BRIGHT + "Thanks for playing! Slainte")
             break
         else:
             print(Fore.RED + "Invalid choice. Please enter 1, 2 or 3.")
-            input(Fore.BLUE + "Press Enter to continue . . .")
+            input(Fore.BLUE + "Press Enter to continue . . .\n")
 
 def main():
     """
