@@ -206,7 +206,7 @@ def display_instructions():
     print(Fore.RED +"4. If you guess the word before the hangman is fully drawn, you win!")
     print(Fore.RED +"5. If not, you lose. . . ")
     print(Fore.RED +"\nGood Luck and remember to have fun!")
-    input(Fore.YELLOW +"\nPress Enter to return to the Main Menu. . .\n")
+    input(Fore.YELLOW + Style.BRIGHT + "\nPress Enter to return to the Main Menu. . .\n")
 
 def play_game():
     """Play one game of hangman""" 
