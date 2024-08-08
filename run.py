@@ -200,12 +200,12 @@ def display_instructions():
     clear_screen()
     print(Fore.YELLOW + "Welcome to Hangman!")
     print(Fore.YELLOW +"\nInstructions:")
-    print(Fore.MAGENTA +"1. You need to guess the word by suggesting letters within a certain number of guesses allowed(6).")
-    print(Fore.MAGENTA +"2. Each correct letter will be revealed in the word.")
-    print(Fore.MAGENTA +"3. Each incorrect guess will be added to the Hangman.")
-    print(Fore.MAGENTA +"4. If you guess the word before the hangman is fully drawn, you win!")
-    print(Fore.MAGENTA +"5. If not, you lose. . . ")
-    print(Fore.MAGENTA +"\nGood Luck and remember to have fun!")
+    print(Fore.RED +"1. You need to guess the word by suggesting letters within a certain number of guesses allowed(6).")
+    print(Fore.RED +"2. Each correct letter will be revealed in the word.")
+    print(Fore.RED +"3. Each incorrect guess will be added to the Hangman.")
+    print(Fore.RED +"4. If you guess the word before the hangman is fully drawn, you win!")
+    print(Fore.RED +"5. If not, you lose. . . ")
+    print(Fore.RED +"\nGood Luck and remember to have fun!")
     input(Fore.YELLOW +"\nPress Enter to return to the Main Menu. . .\n")
 
 def play_game():
